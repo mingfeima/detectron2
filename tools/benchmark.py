@@ -134,20 +134,32 @@ def benchmark_eval(args):
     for _ in range(5):  # warmup
         model(dummy_data[0])
 
-    max_iter = 400
+    max_iter = args.max_iter
     timer = Timer()
-    with tqdm.tqdm(total=max_iter) as pbar:
-        for idx, d in enumerate(f()):
-            if idx == max_iter:
-                break
-            model(d)
-            pbar.update()
-    logger.info("{} iters in {} seconds.".format(max_iter, timer.seconds()))
+    if args.profile:
+        with torch.autograd.profiler.profile() as prof:
+            for idx, d in enumerate(f()):
+                if idx == max_iter:
+                    break
+                model(d)
+        print(prof.key_averages().table(sort_by="self_cpu_time_total"))
+    else:
+        with tqdm.tqdm(total=max_iter) as pbar:
+            for idx, d in enumerate(f()):
+                if idx == max_iter:
+                    break
+                model(d)
+                pbar.update()
+    logger.info("{} iters in {:.3f} seconds.".format(max_iter, timer.seconds()))
 
 
 if __name__ == "__main__":
     parser = default_argument_parser()
     parser.add_argument("--task", choices=["train", "eval", "data"], required=True)
+    parser.add_argument("--max_iter", default=10, type=int, metavar='N',
+                        help='number of max iterations')
+    parser.add_argument('--profile', action='store_true', default=False,
+                        help='do profiling')
     args = parser.parse_args()
     assert not args.eval_only
 

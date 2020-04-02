@@ -25,7 +25,7 @@ _C.MODEL = CN()
 _C.MODEL.LOAD_PROPOSALS = False
 _C.MODEL.MASK_ON = False
 _C.MODEL.KEYPOINT_ON = False
-_C.MODEL.DEVICE = "cuda"
+_C.MODEL.DEVICE = "cpu"
 _C.MODEL.META_ARCHITECTURE = "GeneralizedRCNN"
 
 # Path (possibly with schema like catalog:// or detectron2://) to a checkpoint file
@@ -54,9 +54,9 @@ _C.INPUT.MIN_SIZE_TRAIN_SAMPLING = "choice"
 # Maximum size of the side of the image during training
 _C.INPUT.MAX_SIZE_TRAIN = 1333
 # Size of the smallest side of the image during testing. Set to zero to disable resize in testing.
-_C.INPUT.MIN_SIZE_TEST = 800
+_C.INPUT.MIN_SIZE_TEST = 1080
 # Maximum size of the side of the image during testing
-_C.INPUT.MAX_SIZE_TEST = 1333
+_C.INPUT.MAX_SIZE_TEST = 1800
 
 # `True` if cropping is used for data augmentation during training
 _C.INPUT.CROP = CN({"ENABLED": False})
