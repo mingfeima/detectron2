@@ -13,6 +13,7 @@ import torch
 import tqdm
 from fvcore.common.timer import Timer
 from torch.nn.parallel import DistributedDataParallel
+import torch.autograd.profiler as profiler
 
 from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.config import get_cfg
@@ -122,6 +123,9 @@ def benchmark_train(args):
 def benchmark_eval(args):
     cfg = setup(args)
     model = build_model(cfg)
+    if args.channels_last:
+        logger.info("Use channels last memory format\n")
+        model = model.to(memory_format=torch.channels_last)
     model.eval()
     logger.info("Model:\n{}".format(model))
     DetectionCheckpointer(model).load(cfg.MODEL.WEIGHTS)
@@ -140,18 +144,24 @@ def benchmark_eval(args):
 
     max_iter = 300
     timer = Timer()
-    with tqdm.tqdm(total=max_iter) as pbar:
-        for idx, d in enumerate(f()):
-            if idx == max_iter:
-                break
-            model(d)
-            pbar.update()
+
+    with profiler.profile(record_shapes=True, enabled=args.profile) as prof:
+        with tqdm.tqdm(total=max_iter) as pbar:
+            for idx, d in enumerate(f()):
+                if idx == max_iter:
+                    break
+                model(d)
+                pbar.update()
     logger.info("{} iters in {} seconds.".format(max_iter, timer.seconds()))
+    if args.profile:
+        print(prof.key_averages().table(sort_by="cpu_time_total", row_limit=100))
 
 
 if __name__ == "__main__":
     parser = default_argument_parser()
     parser.add_argument("--task", choices=["train", "eval", "data"], required=True)
+    parser.add_argument("--channels_last", action="store_true", help="use channels last (NHWC) memory format")
+    parser.add_argument("--profile", action="store_true", help="enable autograd profiler")
     args = parser.parse_args()
     assert not args.eval_only
 
