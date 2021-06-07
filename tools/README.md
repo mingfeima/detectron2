@@ -4,7 +4,7 @@ CPU performance optimization on MaskedRCNN
 #### Optimization
 I will gradually upstream CPU optimization to orinal repos but since this is somewhat long term.
 Currently I put related patches at:
-* **torch**: [test_channels_last_with_bfloat16_support](https://github.com/mingfeima/pytorch/tree/test_channels_last_with_bfloat16_support), this branch contains: a) channels last support; b) BFloat16 support.
+* **torch**: [test_channels_last_with_bfloat16_support](https://github.com/mingfeima/pytorch/tree/test_channels_last_with_bfloat16_support), this branch contains: a) channels last support; b) BFloat16 support; c) oneDNN upgrade to v2.2 (v2.1 has perf bug in weight reorder).
 * **torchvision**: [cpu_opt](https://github.com/mingfeima/vision/tree/cpu_opt), this branch contains channels last suport on Float32. (Will cover BFloat16 later on).
 
 #### Installation
