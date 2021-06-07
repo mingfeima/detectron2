@@ -49,9 +49,7 @@ model = model.to(memory_format=torch.channels_last)
 ### with config "fast_rcnn_R_50_FPN_1x.yaml"
 ### default: 300 iters in 185.4384527085349 seconds.
 ### NCHW (opt): 300 iters in 80.56146793198423 seconds.
-### NHWC (opt): 300 iters in 61.409820175002096 seconds.
-
-### mkldnn 2.x has perf bug on NHWC weight reorder, update this later on.
+### NHWC (opt): 300 iters in 55.49435344198719 seconds.
 ```
 
 #### Schedule
