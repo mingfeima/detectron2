@@ -47,9 +47,10 @@ model = model.to(memory_format=torch.channels_last)
 #### Result On CLX single socket 20C
 ```bash
 ### with config "fast_rcnn_R_50_FPN_1x.yaml"
-### default: 300 iters in 185.4384527085349 seconds.
-### NCHW (opt): 300 iters in 80.56146793198423 seconds.
-### NHWC (opt): 300 iters in 55.49435344198719 seconds.
+### NCHW (torch-1.8.1/vision-0.9.1): 300 iters in 326.0195782049559 seconds.
+### NCHW (torch-opt/vision-0.9.1): 300 iters in 185.4384527085349 seconds.
+### NCHW (torch-opt/vision-opt): 300 iters in 80.56146793198423 seconds.
+### NHWC (torch-opt/vision-opt): 300 iters in 55.49435344198719 seconds.
 ```
 
 #### Schedule
